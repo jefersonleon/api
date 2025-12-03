@@ -1,0 +1,23 @@
+{
+  "name": "Gestão Escolar",
+  "short_name": "Alunos App",
+  "start_url": "./index.php",
+  "display": "standalone",
+  "background_color": "#f4f6f9",
+  "theme_color": "#4a90e2",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}

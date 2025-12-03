@@ -1,5 +1,5 @@
 <?php
-include 'conexao.php'; 
+include 'conexao.php';
 
 // LÓGICA DE PESQUISA
 $busca = "";
@@ -9,7 +9,7 @@ if (isset($_GET['busca']) && !empty($_GET['busca'])) {
     // Protege contra SQL Injection para o Banco
     $termo = $conn->real_escape_string($_GET['busca']);
     $filtro_sql = "WHERE nome LIKE '%$termo%' OR email LIKE '%$termo%'";
-    
+
     // Mantém o texto limpo para mostrar no Input (sem as barras invertidas)
     $busca = $_GET['busca'];
 }
@@ -20,9 +20,16 @@ $result = $conn->query($sql);
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4a90e2">
+
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+
     <title>Gestão de Alunos</title>
     <style>
         :root {
@@ -57,11 +64,15 @@ $result = $conn->query($sql);
             background-color: var(--card-bg);
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             margin-bottom: 20px;
         }
 
-        h1 { margin: 0; font-size: 1.5rem; color: #333; }
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #333;
+        }
 
         .search-wrapper {
             display: flex;
@@ -80,7 +91,9 @@ $result = $conn->query($sql);
             transition: border-color 0.3s;
         }
 
-        .search-wrapper input:focus { border-color: var(--primary); }
+        .search-wrapper input:focus {
+            border-color: var(--primary);
+        }
 
         .search-wrapper button {
             position: absolute;
@@ -105,13 +118,15 @@ $result = $conn->query($sql);
             display: inline-block;
         }
 
-        .btn-novo:hover { transform: translateY(-2px); }
+        .btn-novo:hover {
+            transform: translateY(-2px);
+        }
 
         /* --- TABELA RESPONSIVA --- */
         .table-container {
             background: var(--card-bg);
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             overflow: hidden;
         }
 
@@ -149,7 +164,8 @@ $result = $conn->query($sql);
         .actions {
             display: flex;
             gap: 8px;
-            justify-content: flex-start; /* Alinha à esquerda */
+            justify-content: flex-start;
+            /* Alinha à esquerda */
         }
 
         .btn-action {
@@ -164,23 +180,55 @@ $result = $conn->query($sql);
             font-size: 1.1rem;
         }
 
-        .btn-edit { background-color: #fff3cd; color: #856404; }
-        .btn-edit:hover { background-color: var(--warning); color: white; }
+        .btn-edit {
+            background-color: #fff3cd;
+            color: #856404;
+        }
 
-        .btn-delete { background-color: #f8d7da; color: #721c24; }
-        .btn-delete:hover { background-color: var(--danger); color: white; }
+        .btn-edit:hover {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-delete:hover {
+            background-color: var(--danger);
+            color: white;
+        }
 
         /* --- RESPONSIVIDADE (MOBILE CARD VIEW) --- */
         @media (max-width: 768px) {
-            .header-toolbar { flex-direction: column; align-items: stretch; }
-            .search-wrapper { max-width: 100%; }
-            .btn-novo { text-align: center; }
+            .header-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-wrapper {
+                max-width: 100%;
+            }
+
+            .btn-novo {
+                text-align: center;
+            }
 
             /* O Segredo: Esconde o cabeçalho da tabela */
-            thead { display: none; }
+            thead {
+                display: none;
+            }
 
             /* Transforma a tabela em blocos */
-            table, tbody, tr, td { display: block; width: 100%; box-sizing: border-box;}
+            table,
+            tbody,
+            tr,
+            td {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+            }
 
             tr {
                 margin-bottom: 15px;
@@ -199,7 +247,9 @@ $result = $conn->query($sql);
                 border-bottom: 1px dashed #eee;
             }
 
-            td:last-child { border-bottom: none; }
+            td:last-child {
+                border-bottom: none;
+            }
 
             /* Adiciona o rótulo antes do valor (Ex: Nome: Jeferson) */
             td::before {
@@ -211,16 +261,19 @@ $result = $conn->query($sql);
                 margin-right: 15px;
             }
 
-            .actions { justify-content: flex-end; }
+            .actions {
+                justify-content: flex-end;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="container">
         <div class="header-toolbar">
             <h1>🎓 Alunos</h1>
-            
+
             <form class="search-wrapper" method="GET">
                 <input type="text" name="busca" placeholder="Pesquisar por nome ou email..." value="<?php echo $busca; ?>">
                 <button type="submit">🔍</button>
@@ -241,10 +294,10 @@ $result = $conn->query($sql);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php 
+                    <?php
                     if ($result->num_rows > 0) {
-                        while($row = $result->fetch_assoc()) {
-                            
+                        while ($row = $result->fetch_assoc()) {
+
                             $caminho_foto = "imagens/" . $row['foto'];
                             if (empty($row['foto']) || !file_exists($caminho_foto)) {
                                 $caminho_foto = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
@@ -256,11 +309,11 @@ $result = $conn->query($sql);
                             echo "<td data-label='ID'>#" . $row['id'] . "</td>";
                             echo "<td data-label='Nome'><strong>" . $row['nome'] . "</strong></td>";
                             echo "<td data-label='Email'>" . $row['email'] . "</td>";
-                            
+
                             echo "<td data-label='Ações'>";
                             echo "<div class='actions'>";
-                            echo "<a href='editar.php?id=".$row['id']."' class='btn-action btn-edit' title='Editar'>✏️</a>";
-                            echo "<a href='excluir.php?id=".$row['id']."' class='btn-action btn-delete' onclick='return confirm(\"Excluir este aluno?\")' title='Excluir'>🗑️</a>";
+                            echo "<a href='editar.php?id=" . $row['id'] . "' class='btn-action btn-edit' title='Editar'>✏️</a>";
+                            echo "<a href='excluir.php?id=" . $row['id'] . "' class='btn-action btn-delete' onclick='return confirm(\"Excluir este aluno?\")' title='Excluir'>🗑️</a>";
                             echo "</div>";
                             echo "</td>";
                             echo "</tr>";
@@ -273,6 +326,18 @@ $result = $conn->query($sql);
             </table>
         </div>
     </div>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js').then(function(registration) {
+                    console.log('PWA: Service Worker registrado com sucesso: ', registration.scope);
+                }, function(err) {
+                    console.log('PWA: Falha no registro: ', err);
+                });
+            });
+        }
+    </script>
 
 </body>
+
 </html>
